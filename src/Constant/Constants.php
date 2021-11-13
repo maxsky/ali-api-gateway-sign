@@ -32,7 +32,7 @@ class Constants {
     const ENCODING = 'UTF-8';
 
     // UserAgent
-    const USER_AGENT = 'demo/aliyun/php';
+    const USER_AGENT = 'aliyun/api-gateway/php-sdk';
 
     // 换行符
     const LF = "\n";

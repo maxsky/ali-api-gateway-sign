@@ -25,6 +25,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Query;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -57,40 +58,32 @@ class HttpClient {
     /**
      * @param string $method
      * @param string $url
-     * @param array  $headers
-     * @param array  $query
-     * @param array  $body ['form_params' => []] or ['json' => []]
+     * @param array  $options
      *
-     * @return StreamInterface
+     * @return StreamInterface|string
      */
-    public function execute(string $method,
-                            string $url, array $headers = [], array $query = [], array $body = []): StreamInterface {
-        $query = Query::build($query);
-
-        if ($query) {
-            $url = "$url?$query";
-        }
-
-        $originBody = $body;
+    public function execute(string $method, string $url, array $options = []) {
+        $headers = $options['headers'] ?? [];
+        $body = $options['body'] ?? [];
+        $form = $body['form'] ?? [];
 
         HttpUtil::preHandleHeaderAndBody($headers, $body);
 
-        $request = new Request($method, $url, $headers, $body);
-
-        $uri = $request->getUri();
+        $uri = (new Uri($url))->withQuery(http_build_query($options['query'] ?? []));
 
         HttpUtil::buildSignHeader(
             self::$appKey, self::$appSecret,
-            $request->getMethod(), $uri->getPath(), Query::parse($uri->getQuery()), $originBody, $headers
+            $method, $uri->getPath(), Query::parse($uri->getQuery()), $form, $headers
         );
 
         $request = new Request($method, $url, $headers, $body);
 
+        var_dump($request->getHeaders());die;
+
         try {
             return (new Client())->send($request)->getBody();
         } catch (GuzzleException $e) {
-
-            var_dump($e->getMessage());
+            return $e->getResponse()->getHeader('X-Ca-Error-Message')[0] ?? '请求错误';
         }
     }
 }

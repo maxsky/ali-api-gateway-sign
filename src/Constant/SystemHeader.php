@@ -26,20 +26,20 @@ namespace AliCloud\ApiGateway\Constant;
 class SystemHeader {
 
     // 签名方法
-    const X_CA_SIGNATURE_METHOD = 'X-Ca-Signature-Method';
+    const X_CA_SIGNATURE_METHOD = 'x-ca-signature-method';
 
     // 签名 Header
-    const X_CA_SIGNATURE = 'X-Ca-Signature';
+    const X_CA_SIGNATURE = 'x-ca-signature';
 
     // 所有参与签名的 Header
-    const X_CA_SIGNATURE_HEADERS = 'X-Ca-Signature-Headers';
+    const X_CA_SIGNATURE_HEADERS = 'x-ca-signature-headers';
 
     // 请求时间戳
-    const X_CA_TIMESTAMP = 'X-Ca-Timestamp';
+    const X_CA_TIMESTAMP = 'x-ca-timestamp';
 
     // 请求放重放 Nonce，15 分钟内保持唯一，建议使用 UUID
-    const X_CA_NONCE = 'X-Ca-Nonce';
+    const X_CA_NONCE = 'x-ca-nonce';
 
     // App Key
-    const X_CA_KEY = 'X-Ca-Key';
+    const X_CA_KEY = 'x-ca-key';
 }

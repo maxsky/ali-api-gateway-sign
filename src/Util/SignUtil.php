@@ -35,17 +35,17 @@ class SignUtil {
      * @param string $method
      * @param string $path
      * @param array  $query
-     * @param array  $body
+     * @param array  $form
      * @param array  $headers
      * @param array  $ex_sign_headers
      *
      * @return string
      */
     public static function sign(string $app_secret, string $method,
-                                string $path, array $query, array $body, array &$headers, array $ex_sign_headers): string {
-        $signStr = strtoupper($method) . Constants::LF;
+                                string $path, array $query, array $form, array &$headers, array $ex_sign_headers): string {
+        $signStr = $method . Constants::LF;
         $signStr .= self::buildHeaderStringToSign($headers, $ex_sign_headers)
-            . self::buildResource($path, $query, $body);
+            . self::buildPathAndParameters($path, $query, $form);
 
         return base64_encode(hash_hmac('sha256', $signStr, $app_secret, true));
     }
@@ -57,44 +57,25 @@ class SignUtil {
      * @return string
      */
     private static function buildHeaderStringToSign(array &$headers, array $ex_sign_headers = []): string {
-        $signStr = $headers[HttpHeader::HTTP_HEADER_ACCEPT] . Constants::LF;
-        $signStr .= $headers[HttpHeader::HTTP_HEADER_CONTENT_MD5] . Constants::LF;
-        $signStr .= $headers[HttpHeader::HTTP_HEADER_CONTENT_TYPE] . Constants::LF;
-        $signStr .= $headers[HttpHeader::HTTP_HEADER_DATE] . Constants::LF;
+        $signStr = '';
+
+        if ($headers[HttpHeader::HTTP_HEADER_ACCEPT] ?? null) {
+            $signStr .= $headers[HttpHeader::HTTP_HEADER_ACCEPT] . Constants::LF;
+        }
+
+        if ($headers[HttpHeader::HTTP_HEADER_CONTENT_MD5] ?? null) {
+            $signStr .= $headers[HttpHeader::HTTP_HEADER_CONTENT_MD5] . Constants::LF;
+        }
+
+        if ($headers[HttpHeader::HTTP_HEADER_CONTENT_TYPE] ?? null) {
+            $signStr .= $headers[HttpHeader::HTTP_HEADER_CONTENT_TYPE] . Constants::LF;
+        }
+
+        if ($headers[HttpHeader::HTTP_HEADER_DATE] ?? null) {
+            $signStr .= $headers[HttpHeader::HTTP_HEADER_DATE] . Constants::LF;
+        }
 
         return $signStr . self::buildHeaders($headers, $ex_sign_headers);
-    }
-
-    /**
-     * @param string $path
-     * @param array  $query
-     * @param array  $body
-     *
-     * @return string
-     */
-    private static function buildResource(string $path, array $query, array $body): string {
-        $signStr = $path;
-        $params = $query;
-
-        if ($body['form'] ?? null) {
-            $params = array_merge($params, $body['form']);
-        }
-
-        ksort($params);
-
-        if ($params) {
-            $signStr .= '?';
-
-            foreach ($params as $param => $value) {
-                if (is_array($value)) {
-                    $value = current($value);
-                }
-
-                $signStr .= "$param=$value";
-            }
-        }
-
-        return $signStr;
     }
 
     /**
@@ -114,21 +95,60 @@ class SignUtil {
             $mergedHeaders[HttpHeader::HTTP_HEADER_CONTENT_TYPE],
             $mergedHeaders[HttpHeader::HTTP_HEADER_DATE],
             $mergedHeaders[SystemHeader::X_CA_SIGNATURE],
-            $mergedHeaders[SystemHeader::X_CA_SIGNATURE_HEADERS]
+            $mergedHeaders[SystemHeader::X_CA_SIGNATURE_HEADERS],
         );
 
-        ksort($mergedHeaders);
-
         if ($mergedHeaders) {
-            $signHeadersStr = '';
+            ksort($mergedHeaders);
 
             foreach ($mergedHeaders as $header => $value) {
-                $signStr .= $header . Constants::SPE_COLON . $value . Constants::LF;
-
-                $signHeadersStr .= $header . Constants::SPE_COMMA;
+                if (stripos($header, 'x-ca-') !== false) {
+                    $signStr .= $header . Constants::SPE_COLON . $value . Constants::LF;
+                } else {
+                    unset($mergedHeaders[$header]);
+                }
             }
 
-            $headers[SystemHeader::X_CA_SIGNATURE_HEADERS] = $signHeadersStr;
+            $headers[SystemHeader::X_CA_SIGNATURE_HEADERS] = implode(',', array_keys($mergedHeaders));
+        }
+
+        return $signStr;
+    }
+
+    /**
+     * @param string $path
+     * @param array  $query
+     * @param array  $form
+     *
+     * @return string
+     */
+    private static function buildPathAndParameters(string $path, array $query, array $form): string {
+        $signStr = $path;
+        $params = $query;
+
+        if ($form) {
+            $params = array_merge($params, $form);
+        }
+
+        ksort($params);
+
+        if ($params) {
+            $signStr .= '?';
+
+            foreach ($params as $param => $value) {
+                if (is_array($value)) {
+                    $value = current($value);
+                }
+
+                if ($value === '') {
+                    $signStr .= "$param&";
+                } else {
+                    //$signStr .= urlencode($param) . '=' . urlencode($value) . '&';
+                    $signStr .= "$param=$value&";
+                }
+            }
+
+            $signStr = rtrim($signStr, '&');
         }
 
         return $signStr;

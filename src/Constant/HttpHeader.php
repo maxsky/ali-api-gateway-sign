@@ -25,13 +25,13 @@ namespace AliCloud\ApiGateway\Constant;
  */
 class HttpHeader {
 
-    const HTTP_HEADER_ACCEPT = 'Accept';
+    const HTTP_HEADER_ACCEPT = 'accept';
 
-    const HTTP_HEADER_CONTENT_MD5 = 'Content-MD5';
+    const HTTP_HEADER_CONTENT_MD5 = 'content-md5';
 
-    const HTTP_HEADER_CONTENT_TYPE = 'Content-Type';
+    const HTTP_HEADER_CONTENT_TYPE = 'content-type';
 
-    const HTTP_HEADER_USER_AGENT = 'User-Agent';
+    const HTTP_HEADER_USER_AGENT = 'user-agent';
 
-    const HTTP_HEADER_DATE = 'Date';
+    const HTTP_HEADER_DATE = 'date';
 }
