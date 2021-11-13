@@ -18,49 +18,28 @@
  * under the License.
  */
 
+namespace AliCloud\ApiGateway\Constant;
 
 /**
- * 集合对象的元素处理
+ * 通用常量
  */
-class DictionaryUtil 
-{
-	public static function Add($dic, $key, $value) {
-		if (null == $value) {
-			return;
-		}
-		if (null == $dic)
-		{
-			$dic = Array();
-		}
-		foreach($dic as $itemKey=>$itemValue)
-		{
-			//区分大小写
-			if ($itemKey == $key) {
-				$dic[$key] = $itemValue;
-				return;
-			}
-		}
-		$dic[$key] = $value;
+class Constants {
 
-	}
+    // 签名算法 HmacSHA256
+    const HMAC_SHA256 = 'HmacSHA256';
 
-	public static function Get($dic, $key)
-	{
-		if (array_key_exists($key, $dic)) {
-			return $dic[$key];
-		}
+    // 编码 UTF-8
+    const ENCODING = 'UTF-8';
 
-		return null;
-	}
+    // UserAgent
+    const USER_AGENT = 'demo/aliyun/php';
 
-	public static function Pop(&$dic, $key)
-	{
-		$value = null;
-		if (array_key_exists($key, $dic)) {
-			$value = $dic[$key];
-			unset($dic[$key]);
-		}
+    // 换行符
+    const LF = "\n";
 
-		return $value;
-	}
+    // 分隔符1
+    const SPE_COMMA = ',';
+
+    // 分隔符2
+    const SPE_COLON = ':';
 }

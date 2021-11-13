@@ -18,16 +18,20 @@
  * under the License.
  */
 
+namespace AliCloud\ApiGateway\Constant;
+
 /**
-*httpClient∂‘œÛ
-*/
-class HttpClient
-{
-	private static $connectTimeout = 30000;//30 second
-	private static $readTimeout	= 80000;//80 second
-	
-	public static function execute($request)
-	{
-		return HttpUtil::send($request, self::$readTimeout, self::$connectTimeout);
-	}
+ * Â∏∏Áî® HTTP Content-Type Â∏∏Èáè
+ */
+class ContentType {
+
+    const CONTENT_TYPE_FORM = 'application/x-www-form-urlencoded; charset=UTF-8';
+
+    const CONTENT_TYPE_JSON = 'application/json; charset=UTF-8';
+
+    const CONTENT_TYPE_XML = 'application/xml; charset=UTF-8';
+
+    const CONTENT_TYPE_STREAM = 'application/octet-stream; charset=UTF-8';
+
+    const CONTENT_TYPE_TEXT = 'application/text; charset=UTF-8';
 }

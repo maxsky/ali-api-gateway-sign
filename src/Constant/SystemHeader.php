@@ -18,18 +18,28 @@
  * under the License.
  */
 
+namespace AliCloud\ApiGateway\Constant;
+
 /**
- * 常用HTTP Content-Type常量
+ * 系统 HTTP 头常量
  */
-class ContentType {
-    //表单类型Content-Type
-	const CONTENT_TYPE_FORM = "application/x-www-form-urlencoded; charset=UTF-8";
-    // 流类型Content-Type
-    const CONTENT_TYPE_STREAM = "application/octet-stream; charset=UTF-8";
-    //JSON类型Content-Type
-    const CONTENT_TYPE_JSON = "application/json; charset=UTF-8";
-    //XML类型Content-Type
-    const CONTENT_TYPE_XML = "application/xml; charset=UTF-8";
-    //文本类型Content-Type
-    const CONTENT_TYPE_TEXT = "application/text; charset=UTF-8";
+class SystemHeader {
+
+    // 签名方法
+    const X_CA_SIGNATURE_METHOD = 'X-Ca-Signature-Method';
+
+    // 签名 Header
+    const X_CA_SIGNATURE = 'X-Ca-Signature';
+
+    // 所有参与签名的 Header
+    const X_CA_SIGNATURE_HEADERS = 'X-Ca-Signature-Headers';
+
+    // 请求时间戳
+    const X_CA_TIMESTAMP = 'X-Ca-Timestamp';
+
+    // 请求放重放 Nonce，15 分钟内保持唯一，建议使用 UUID
+    const X_CA_NONCE = 'X-Ca-Nonce';
+
+    // App Key
+    const X_CA_KEY = 'X-Ca-Key';
 }
