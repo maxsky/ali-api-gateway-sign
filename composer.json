@@ -1,11 +1,11 @@
 {
-    "name": "maxsky/ali-api-gateway-sign",
-    "description": "Ali API Gateway Sign SDK",
+    "name": "maxsky/aliyun-api-gateway-sdk",
+    "description": "Ali API Gateway Request SDK",
     "type": "library",
     "license": "Apache",
     "autoload": {
         "psr-4": {
-            "AliCloud\\ApiGateway\\": "src/"
+            "Aliyun\\ApiGateway\\": "src/"
         },
         "files": ["src/helpers.php"]
     },
@@ -19,6 +19,7 @@
     "prefer-stable": true,
     "require": {
         "php": ">=7.1",
+        "ext-json": "*",
         "guzzlehttp/guzzle": "^6.5",
         "carbondate/carbon": "^1.33"
     },

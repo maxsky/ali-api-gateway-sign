@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,9 +19,9 @@
  * under the License.
  */
 
-namespace AliCloud\ApiGateway\Http;
+namespace Aliyun\ApiGateway\Http;
 
-use AliCloud\ApiGateway\Util\HttpUtil;
+use Aliyun\ApiGateway\Util\HttpUtil;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Query;
@@ -60,9 +61,10 @@ class HttpClient {
      * @param string $url
      * @param array  $options
      *
-     * @return StreamInterface|string
+     * @return StreamInterface
+     * @throws GuzzleException
      */
-    public function execute(string $method, string $url, array $options = []) {
+    public function execute(string $method, string $url, array $options = []): StreamInterface {
         $headers = $options['headers'] ?? [];
         $body = $options['body'] ?? [];
         $form = $body['form'] ?? [];
@@ -78,12 +80,6 @@ class HttpClient {
 
         $request = new Request($method, $url, $headers, $body);
 
-        var_dump($request->getHeaders());die;
-
-        try {
-            return (new Client())->send($request)->getBody();
-        } catch (GuzzleException $e) {
-            return $e->getResponse()->getHeader('X-Ca-Error-Message')[0] ?? '请求错误';
-        }
+        return (new Client())->send($request)->getBody();
     }
 }

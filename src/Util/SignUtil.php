@@ -19,11 +19,11 @@
  * under the License.
  */
 
-namespace AliCloud\ApiGateway\Util;
+namespace Aliyun\ApiGateway\Util;
 
-use AliCloud\ApiGateway\Constant\Constants;
-use AliCloud\ApiGateway\Constant\HttpHeader;
-use AliCloud\ApiGateway\Constant\SystemHeader;
+use Aliyun\ApiGateway\Constant\Constants;
+use Aliyun\ApiGateway\Constant\HttpHeader;
+use Aliyun\ApiGateway\Constant\SystemHeader;
 
 /**
  * 签名处理
@@ -60,20 +60,28 @@ class SignUtil {
         $signStr = '';
 
         if ($headers[HttpHeader::HTTP_HEADER_ACCEPT] ?? null) {
-            $signStr .= $headers[HttpHeader::HTTP_HEADER_ACCEPT] . Constants::LF;
+            $signStr .= $headers[HttpHeader::HTTP_HEADER_ACCEPT];
         }
+
+        $signStr .= Constants::LF;
 
         if ($headers[HttpHeader::HTTP_HEADER_CONTENT_MD5] ?? null) {
-            $signStr .= $headers[HttpHeader::HTTP_HEADER_CONTENT_MD5] . Constants::LF;
+            $signStr .= $headers[HttpHeader::HTTP_HEADER_CONTENT_MD5];
         }
+
+        $signStr .= Constants::LF;
 
         if ($headers[HttpHeader::HTTP_HEADER_CONTENT_TYPE] ?? null) {
-            $signStr .= $headers[HttpHeader::HTTP_HEADER_CONTENT_TYPE] . Constants::LF;
+            $signStr .= $headers[HttpHeader::HTTP_HEADER_CONTENT_TYPE];
         }
 
+        $signStr .= Constants::LF;
+
         if ($headers[HttpHeader::HTTP_HEADER_DATE] ?? null) {
-            $signStr .= $headers[HttpHeader::HTTP_HEADER_DATE] . Constants::LF;
+            $signStr .= $headers[HttpHeader::HTTP_HEADER_DATE];
         }
+
+        $signStr .= Constants::LF;
 
         return $signStr . self::buildHeaders($headers, $ex_sign_headers);
     }
@@ -143,7 +151,6 @@ class SignUtil {
                 if ($value === '') {
                     $signStr .= "$param&";
                 } else {
-                    //$signStr .= urlencode($param) . '=' . urlencode($value) . '&';
                     $signStr .= "$param=$value&";
                 }
             }

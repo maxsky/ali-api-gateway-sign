@@ -19,12 +19,12 @@
  * under the License.
  */
 
-namespace AliCloud\ApiGateway\Util;
+namespace Aliyun\ApiGateway\Util;
 
-use AliCloud\ApiGateway\Constant\Constants;
-use AliCloud\ApiGateway\Constant\ContentType;
-use AliCloud\ApiGateway\Constant\HttpHeader;
-use AliCloud\ApiGateway\Constant\SystemHeader;
+use Aliyun\ApiGateway\Constant\Constants;
+use Aliyun\ApiGateway\Constant\ContentType;
+use Aliyun\ApiGateway\Constant\HttpHeader;
+use Aliyun\ApiGateway\Constant\SystemHeader;
 use Carbon\Carbon;
 use GuzzleHttp\Psr7\Utils;
 
@@ -36,13 +36,15 @@ class HttpUtil {
      */
     public static function preHandleHeaderAndBody(array &$headers, array &$body) {
         if (!($headers[HttpHeader::HTTP_HEADER_ACCEPT] ?? null)) {
-            $headers[HttpHeader::HTTP_HEADER_ACCEPT] = ''; // application/json; charset=utf-8
+            $headers[HttpHeader::HTTP_HEADER_ACCEPT] = '';
         }
 
-        //$headers[HttpHeader::HTTP_HEADER_CONTENT_MD5] = '';
+        if (!($headers[HttpHeader::HTTP_HEADER_USER_AGENT] ?? null)) {
+            $headers[HttpHeader::HTTP_HEADER_USER_AGENT] = Constants::USER_AGENT;
+        }
 
-        $headers[HttpHeader::HTTP_HEADER_USER_AGENT] = Constants::USER_AGENT;
-        //$headers[HttpHeader::HTTP_HEADER_DATE] = Carbon::now('UTC')->toRfc822String();
+        $headers[HttpHeader::HTTP_HEADER_CONTENT_MD5] = '';
+        $headers[HttpHeader::HTTP_HEADER_DATE] = Carbon::now()->toRfc7231String() . '+00:00';
 
         if ($body['form'] ?? null) {
             $headers[HttpHeader::HTTP_HEADER_CONTENT_TYPE] = ContentType::CONTENT_TYPE_FORM;
@@ -88,7 +90,7 @@ class HttpUtil {
     public static function buildSignHeader(string $app_key, string $app_secret, string $method,
                                            string $path, array $query, array $form, array &$headers, array $ex_sign_headers = []) {
         $headers[SystemHeader::X_CA_KEY] = $app_key;
-        // 防重放，协议层不能进行重试，否则会报 NONCE 被使用；如果需要协议层重试，请注释此行
+        // 协议层不能进行重试，否则会报 NONCE 被使用；如果需要协议层重试，请注释此行
         $headers[SystemHeader::X_CA_NONCE] = generateGuid();
         $headers[SystemHeader::X_CA_TIMESTAMP] = msectime();
         $headers[SystemHeader::X_CA_SIGNATURE_METHOD] = Constants::HMAC_SHA256;

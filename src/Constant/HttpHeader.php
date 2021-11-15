@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,7 +19,7 @@
  * under the License.
  */
 
-namespace AliCloud\ApiGateway\Constant;
+namespace Aliyun\ApiGateway\Constant;
 
 /**
  * HTTP 请求头常量

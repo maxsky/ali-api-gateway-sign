@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,7 +19,7 @@
  * under the License.
  */
 
-namespace AliCloud\ApiGateway\Constant;
+namespace Aliyun\ApiGateway\Constant;
 
 /**
  * 通用常量
@@ -37,9 +38,6 @@ class Constants {
     // 换行符
     const LF = "\n";
 
-    // 分隔符1
-    const SPE_COMMA = ',';
-
-    // 分隔符2
+    // 分隔符
     const SPE_COLON = ':';
 }
