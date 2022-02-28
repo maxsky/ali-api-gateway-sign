@@ -2,7 +2,7 @@
     "name": "maxsky/aliyun-api-gateway-sdk",
     "description": "Ali API Gateway Request SDK",
     "type": "library",
-    "license": "Apache",
+    "license": "Apache-2.0",
     "autoload": {
         "psr-4": {
             "Aliyun\\ApiGateway\\": "src/"
