@@ -9,7 +9,7 @@ PHP >= 7.1
 ## 安装
 
 ```shell
-composer required maxsky/aliyun-api-gateway-sdk
+composer require maxsky/aliyun-api-gateway-sdk
 ```
 
 ## 使用
