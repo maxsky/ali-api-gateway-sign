@@ -24,6 +24,6 @@
         "carbondate/carbon": "^1.33"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.5|^8.0|^9.0"
+        "phpunit/phpunit": "^6.5|^8.0"
     }
 }
