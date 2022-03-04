@@ -1,4 +1,5 @@
 /.idea
 /vendor
+.phpunit.*
 composer.lock
 coverage.xml

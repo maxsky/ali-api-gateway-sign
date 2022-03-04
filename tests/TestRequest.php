@@ -10,31 +10,36 @@
 namespace AliCloudApiGatewayTest;
 
 use Aliyun\ApiGateway\Http\HttpClient;
-use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\BadResponseException;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
+use Throwable;
 
 class TestRequest extends TestCase {
 
     public function testHttpRequest() {
         try {
-            $result = HttpClient::setKey('appKey', 'appSecret')
-                ->execute('POST', 'https://test.alicloudapi.com', [
+            $result = HttpClient::setKey('', '')
+                ->execute('POST', 'https://test.market.alicloudapi.com/*', [
                     'headers' => [
+                        //'x-ca-stage' => 'RELEASE',
+                        //'x-ca-version' => 1
                     ],
                     'query' => [
+                        'param1' => 'value1'
                     ],
                     'body' => [
                         'form' => [
                         ],
                         'json' => [
+                            'param2' => 'value2'
                         ],
                         'text' => ''
                     ]
                 ]);
-        } catch (GuzzleException $e) {
-            var_dump($e->getResponse()->getHeaders());
-            $this->fail();
+        } catch (Throwable|BadResponseException $e) {
+            var_dump(json_decode($e->getResponse()->getBody(), true));
+            die;
         }
 
         print_r(json_decode($result, true));

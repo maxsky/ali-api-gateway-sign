@@ -27,7 +27,7 @@ if (!function_exists('generateGuid')) {
      * @return string
      */
     function generateGuid(): string {
-        mt_srand((double)microtime() * 10000);
+        mt_srand();
 
         return strtoupper(md5(uniqid(rand(), true)));
     }
@@ -40,6 +40,6 @@ if (!function_exists('generateContentMD5')) {
      * @return string
      */
     function generateContentMD5(string $input): string {
-        return base64_encode(md5(unpack('C*', $input)));
+        return base64_encode(md5(pack('C*', $input)));
     }
 }

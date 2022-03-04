@@ -30,7 +30,7 @@ use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\StreamInterface;
 
 /**
- *httpClient对象
+ * HttpClient 对象
  */
 class HttpClient {
 
@@ -66,7 +66,7 @@ class HttpClient {
      */
     public function execute(string $method, string $url, array $options = []): StreamInterface {
         $headers = $options['headers'] ?? [];
-        $body = $options['body'] ?? [];
+        $body = $options['body'] ?? null;
         $form = $body['form'] ?? [];
 
         HttpUtil::preHandleHeaderAndBody($headers, $body);
@@ -78,7 +78,7 @@ class HttpClient {
             $method, $uri->getPath(), Query::parse($uri->getQuery()), $form, $headers
         );
 
-        $request = new Request($method, $url, $headers, $body);
+        $request = new Request($method, $uri, $headers, $body);
 
         return (new Client())->send($request)->getBody();
     }

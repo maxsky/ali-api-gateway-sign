@@ -103,7 +103,7 @@ class SignUtil {
             $mergedHeaders[HttpHeader::HTTP_HEADER_CONTENT_TYPE],
             $mergedHeaders[HttpHeader::HTTP_HEADER_DATE],
             $mergedHeaders[SystemHeader::X_CA_SIGNATURE],
-            $mergedHeaders[SystemHeader::X_CA_SIGNATURE_HEADERS],
+            $mergedHeaders[SystemHeader::X_CA_SIGNATURE_HEADERS]
         );
 
         if ($mergedHeaders) {
