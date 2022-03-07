@@ -18,15 +18,15 @@ composer require maxsky/aliyun-api-gateway-sdk
 use Aliyun\ApiGateway\Http;
 
 try {
-    $result = HttpClient::setKey('appKey', 'appSecret')
-        ->execute('POST', 'https://test.alicloudapi.com', [
+    $result = HttpClient::setKey('App Key', 'App Secret')
+        ->execute('POST', 'https://demo.market.alicloudapi.com/gateway_api', [
             'headers' => [
-                // 额外请求头键值对
-                'Accept' => 'application/json; charset=utf-8',
-                'User-Agent' => 'aliyun/api-gateway/php-sdk'
+                // 额外请求头键值对，“X-Ca-”开头的请求头会自动加入签名计算
+                'x-ca-header1' => 'value1',
+                'x-ca-header2' => 'value2'
             ],
             'query' => [
-                //  query 参数无需拼接在 URL 上，写在此处即可
+                // query 参数无需拼接在 URL 上，写在此处即可
                 'param1' => 'value1',
                 'param2' => 'value2'
             ],
@@ -37,18 +37,33 @@ try {
                     'formParam1' => 'value 1',
                     'formParam2' => 'value 2'
                 ],
+                // application/json
                 'json' => [
-                    // application/json
-                    'name' = 'Max Sky',
+                    'name' => 'Max Sky',
                     'gender' => 'male'
                 ],
-                'text' => 'Message' // application/text
+                // application/text
+                'text' => 'contents'
             ]
         ]);
-} catch (GuzzleException $e) {
-    var_dump($e->getResponse()->getHeaders());
-    $this->fail();
+} catch (GuzzleException|ClientException|BadResponseException $e) {
+    if ($e instanceof ClientException) {
+        // 请求失败时显示来自阿里云的错误消息
+        var_dump($e->getResponse()->getHeader('X-Ca-Error-Message'));
+        die;
+    }
+
+    if ($e instanceof BadResponseException) {
+        // 请求成功但参数错误之类的响应可通过捕获该异常得到
+        var_dump(json_decode($e->getResponse()->getBody(), true));
+        die;
+    }
+
+    var_dump($e->getMessage());
+    die;
 }
 
+// 请求成功获取响应结果
 var_dump(json_decode($result, true));
+
 ```

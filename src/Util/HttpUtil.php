@@ -43,22 +43,20 @@ class HttpUtil {
             $headers[HttpHeader::HTTP_HEADER_USER_AGENT] = Constants::USER_AGENT;
         }
 
-        //$headers[HttpHeader::HTTP_HEADER_CONTENT_MD5] = '';
         $headers[HttpHeader::HTTP_HEADER_DATE] = Carbon::now()->toRfc7231String() . '+00:00';
 
         if ($body['form'] ?? null) {
             $headers[HttpHeader::HTTP_HEADER_CONTENT_TYPE] = ContentType::CONTENT_TYPE_FORM;
+
             $body = Utils::streamFor(http_build_query($body['form']));
         } elseif ($body['json'] ?? null) {
             $headers[HttpHeader::HTTP_HEADER_CONTENT_TYPE] = ContentType::CONTENT_TYPE_JSON;
-            $body = json_encode($body['json']);
 
-            //$headers[HttpHeader::HTTP_HEADER_CONTENT_MD5] = generateContentMD5($body);
-
-            $body = Utils::streamFor($body);
+            $body = Utils::streamFor(json_encode($body['json']));
         } elseif ($body['xml'] ?? null) {
             $headers[HttpHeader::HTTP_HEADER_CONTENT_TYPE] = ContentType::CONTENT_TYPE_XML;
-            $headers[HttpHeader::HTTP_HEADER_CONTENT_MD5] = generateContentMD5($body['xml']);
+            // $headers[HttpHeader::HTTP_HEADER_CONTENT_MD5] = generateContentMD5($body['xml']);
+
             $body = Utils::streamFor($body['xml']);
         } elseif ($body['stream'] ?? null) {
             $headers[HttpHeader::HTTP_HEADER_CONTENT_TYPE] = ContentType::CONTENT_TYPE_STREAM;
@@ -67,13 +65,8 @@ class HttpUtil {
             $body = Utils::streamFor($body['stream']);
         } else {
             $headers[HttpHeader::HTTP_HEADER_CONTENT_TYPE] = ContentType::CONTENT_TYPE_TEXT;
-            $headers[HttpHeader::HTTP_HEADER_CONTENT_MD5] = generateContentMD5($body['text']);
 
-            $body = Utils::streamFor($body['text']);
-        }
-
-        if (empty($body)) {
-            $body = '';
+            $body = Utils::streamFor($body['text'] ?? '');
         }
     }
 
@@ -93,7 +86,7 @@ class HttpUtil {
         // 协议层不能进行重试，否则会报 NONCE 被使用；如果需要协议层重试，请注释此行
         $headers[SystemHeader::X_CA_NONCE] = generateGuid();
         $headers[SystemHeader::X_CA_TIMESTAMP] = msectime();
-        //$headers[SystemHeader::X_CA_SIGNATURE_METHOD] = Constants::HMAC_SHA256;
+        $headers[SystemHeader::X_CA_SIGNATURE_METHOD] = Constants::HMAC_SHA256;
 
         $headers[SystemHeader::X_CA_SIGNATURE] =
             SignUtil::Sign($app_secret, $method, $path, $query, $form, $headers, $ex_sign_headers);
